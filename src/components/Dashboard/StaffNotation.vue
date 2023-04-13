@@ -282,9 +282,33 @@ export default class StaffNotation extends Vue {
     this.close(needReload)
   }
 
-  goToConsentContinuationOutFiling ():void {
+  async goToConsentContinuationOutFiling (): Promise<void> {
     // 0 means "new filing"
-    this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: '0' } })
+    // this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: '0' } })
+
+    let url: string
+    try {
+      // show spinner since the network calls below can take a few seconds
+      this.mutateFetchingDataSpinner(true)
+
+      // create consent to continuation out draft filing
+      const consent = this.buildConsentContinuationOutFiling()
+      const filing = await LegalServices.createFiling(this.getIdentifier, consent, true)
+      const id = +filing?.header?.filingId
+
+      if (isNaN(id)) throw new Error('Invalid API response')
+
+      // url = `${this.getCreateUrl}consent-continuation-out?id=${this.getIdentifier}`
+      url = `http://localhost:8080/businesses/create/consent-continuation-out?id=${this.getIdentifier}`
+      navigate(url)
+    } catch (error) {
+      // clear spinner on error
+      this.mutateFetchingDataSpinner(false)
+
+      alert(`Could not create consent to continuation out filing. Please try again or cancel.`)
+    }
+    // const url = `${this.getCreateUrl}consent-continuation-out?id=${this.getIdentifier}`
+    // navigate(url)
   }
 
   async goToRestorationFiling (applicationName: ApplicationTypes, restorationType: FilingSubTypes): Promise<void> {

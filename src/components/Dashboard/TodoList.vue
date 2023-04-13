@@ -1396,7 +1396,9 @@ export default class TodoList extends Vue {
       case FilingTypes.CONSENT_CONTINUATION_OUT:
         // resume this Consent to Continuation Out locally
         this.setCurrentFilingStatus(FilingStatus.DRAFT)
-        this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: item.filingId.toString() } })
+        const consentContinuationOutUrl = `http://localhost:8080/businesses/create/consent-continuation-out?id=${this.getIdentifier}`
+        navigate(consentContinuationOutUrl)
+        // this.$router.push({ name: Routes.CONSENT_CONTINUATION_OUT, params: { filingId: item.filingId.toString() } })
         break
 
       case FilingTypes.CORRECTION:

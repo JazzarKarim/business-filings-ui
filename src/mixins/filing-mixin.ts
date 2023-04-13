@@ -2,6 +2,7 @@ import { Component } from 'vue-property-decorator'
 import { DateMixin } from '@/mixins'
 import { Action, Getter, State } from 'vuex-class'
 import {
+  ConsentContinuationOutFilingIF,
   CorrectionFilingIF,
   DissolutionFilingIF,
   FilingDataIF,
@@ -172,5 +173,28 @@ export default class FilingMixin extends DateMixin {
       }
     }
     return restoration
+  }
+
+  /**
+   * Builds a Consent to Continuation Out filing body.
+   * @returns the filing body
+   */
+  buildConsentContinuationOutFiling (): ConsentContinuationOutFilingIF {
+    const consentContinuationOut: ConsentContinuationOutFilingIF = {
+      header: {
+        date: this.getCurrentDate,
+        name: FilingTypes.CONSENT_CONTINUATION_OUT
+      },
+      business: {
+        foundingDate: this.dateToApi(this.getFoundingDate),
+        identifier: this.getIdentifier,
+        legalName: this.entityName,
+        legalType: this.getLegalType
+      },
+      consentContinuationOut: {
+        details: ''
+      }
+    }
+    return consentContinuationOut
   }
 }
